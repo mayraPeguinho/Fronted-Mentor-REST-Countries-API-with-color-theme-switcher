@@ -14,15 +14,15 @@ export default async function Tarjet({ params }) {
           <h1>{country[0].name.common}</h1>
           <div className="flex gap-10">
             <p>
-              Native Name: {country[0].name.nativeName.eng.official}
+              Native Name: {Object.values(country[0].name.nativeName)[0].official}
               <br />
               Population: {country[0].population}
               <br />
               Region: {country[0].region}
               <br />
-              Sub Region: {country[0].population}
+              Sub Region: {country[0].subregion}
               <br />
-              Capital: {country[0].population}
+              Capital: {country[0].capital}
               <br />
             </p>
             <p>
@@ -30,7 +30,7 @@ export default async function Tarjet({ params }) {
               <br />
               Currencies: {country[0].population}
               <br />
-              Languages: {country[0].population}
+              Languages: {Object.values(country[0].languages || {}).join(", ")}
             </p>
           </div>
         </div>
