@@ -1,4 +1,4 @@
-export default async function Tarjet({ params }) {
+export default async function Country({ params }) {
 
   const { id } = await params;
 

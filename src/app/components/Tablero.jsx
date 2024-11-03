@@ -1,7 +1,6 @@
 "use client"
-
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Tarjet from './tarjet';
 
 export default function Tablero({ searchTerm }) {
     const [results, setResults] = useState([]);
@@ -26,7 +25,7 @@ export default function Tablero({ searchTerm }) {
     }, [searchTerm]);
 
     return (
-        <div className="flex flex-wrap h-full w-full gap-10">
+        <div className="flex flex-wrap h-full w-full gap-10 justify-center md:justify-center">
             {results.length > 0 ? (
                 results.slice(0, 10).map((country, index) => (
                     <Tarjet
@@ -40,28 +39,9 @@ export default function Tablero({ searchTerm }) {
                     />
                 ))
             ) : (
-                <p className='text-white'>No se encontraron países.</p> // Mensaje cuando no hay resultados
+                <p>No se encontraron países.</p> // Mensaje cuando no hay resultados
             )}
         </div>)
 }
 
-export function Tarjet({ flag, name, population, region, capital, ccn3 }) {
 
-    return <Link href={`/countries/${ccn3}`} passHref>
-        <article className="flex flex-col bg-slate-600 cursor-pointer">
-            <div className="flex flex-col gap-3">
-                <div className="flex">
-                    <img src={flag} alt="Bandera" className="w-72 h-48 object-cover" />
-                </div>
-                <div className="flex flex-col p-5 gap-3">
-                    <h1>{name}</h1>
-                    <p>Population: {population}
-                        <br />
-                        Region: {region}
-                        <br />
-                        Capital: {capital}</p>
-                </div>
-            </div>
-        </article>
-    </Link>
-}
