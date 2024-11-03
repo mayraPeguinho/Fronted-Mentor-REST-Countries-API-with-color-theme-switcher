@@ -1,4 +1,4 @@
-const options = ["Africa", "America", "Asia", "Europe", "Oceania"]
+const options = ["Africa", "Americas", "Asia", "Europe", "Oceania"]
 
 export default function Select({ name, searchTerm, onSearch }) {
 

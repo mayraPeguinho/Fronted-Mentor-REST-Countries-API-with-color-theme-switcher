@@ -1,28 +1,56 @@
 "use client"
 import { useEffect, useState } from 'react';
 import Tarjet from './tarjet';
+import useStore from '../store';
+import axios from 'axios';
 
-export default function Tablero({ searchTerm }) {
+
+
+export default function Tablero() {
+
+    const instance = axios.create({
+        baseURL: 'https://restcountries.com/',
+        timeout: 1000,
+        responseType: 'json',
+    });
+
+
+    const search = useStore((state) => state.search);
+
     const [results, setResults] = useState([]);
 
     useEffect(() => {
         const fetchResults = async () => {
             let response;
 
-            if (!searchTerm) {
-                response = await fetch('https://restcountries.com/v3.1/all');
-            } else {
-                // Si searchTerm no está vacío, busca por el nombre del país
-                response = await fetch(`https://restcountries.com/v3.1/name/${searchTerm}`);
+            try {
+                if (!search.inputText && !search.selectText) {
+                    response = await instance.get('v3.1/all');
+                    response = response.data;
+                } else if (search.inputText) {
+                    response = await instance.get(`v3.1/name/${search.inputText}`);
+                    response = response.data;
+
+                    if (search.selectText) {
+                        response = response.filter(country =>
+                            country.region.toLowerCase() === search.selectText.toLowerCase()
+                        );
+                    }
+                } else if (search.selectText) {
+                    response = await instance.get(`v3.1/region/${search.selectText.toLowerCase()}`);
+                    response = response.data;
+                }
+
+                if (response) {
+                    setResults(response);
+                }
+            } catch (error) {
+                setResults([]); // Establecer resultados vacíos en caso de error
             }
-            if (response) {
-                const countries = await response.json()
-                setResults(countries);
-            }
-        }
+        };
 
         fetchResults();
-    }, [searchTerm]);
+    }, [search.inputText, search.selectText]);
 
     return (
         <div className="flex flex-wrap h-full w-full gap-10 justify-center md:justify-center">
