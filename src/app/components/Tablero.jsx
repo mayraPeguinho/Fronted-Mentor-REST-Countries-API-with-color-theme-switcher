@@ -5,7 +5,6 @@ import useStore from '../store';
 import axios from 'axios';
 
 
-
 export default function Tablero() {
 
     const instance = axios.create({
@@ -13,7 +12,6 @@ export default function Tablero() {
         timeout: 1000,
         responseType: 'json',
     });
-
 
     const search = useStore((state) => state.search);
 
@@ -25,10 +23,10 @@ export default function Tablero() {
 
             try {
                 if (!search.inputText && !search.selectText) {
-                    response = await instance.get('v3.1/all');
+                    response = await instance.get('v3.1/all?fields=name,flags,population,region,capital,ccn3');
                     response = response.data;
                 } else if (search.inputText) {
-                    response = await instance.get(`v3.1/name/${search.inputText}`);
+                    response = await instance.get(`v3.1/name/${search.inputText}?fields=name,flags,population,region,capital,ccn3`);
                     response = response.data;
 
                     if (search.selectText) {
@@ -37,15 +35,14 @@ export default function Tablero() {
                         );
                     }
                 } else if (search.selectText) {
-                    response = await instance.get(`v3.1/region/${search.selectText.toLowerCase()}`);
+                    response = await instance.get(`v3.1/region/${search.selectText.toLowerCase()}?fields=name,flags,population,region,capital,ccn3`);
                     response = response.data;
                 }
-
                 if (response) {
                     setResults(response);
                 }
             } catch (error) {
-                setResults([]); // Establecer resultados vacíos en caso de error
+                setResults([]);
             }
         };
 

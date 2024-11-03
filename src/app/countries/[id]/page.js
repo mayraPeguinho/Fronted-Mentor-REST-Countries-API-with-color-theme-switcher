@@ -7,12 +7,12 @@ export default async function Country({ params }) {
 
   return (
     <div>
-      <h1>Countries: {id}</h1>
-      <article className="flex">
-        <img></img>
+      <article className="flex flex-col p-10 gap-10">
+        <button className="w-1/5">Back</button>
+        <img src={country[0].flags.svg} alt="Bandera" className="w-full h-auto object-cover" />
         <div>
           <h1>{country[0].name.common}</h1>
-          <div className="flex gap-10">
+          <div className="flex flex-col gap-5">
             <p>
               Native Name: {Object.values(country[0].name.nativeName)[0].official}
               <br />
@@ -32,6 +32,7 @@ export default async function Country({ params }) {
               <br />
               Languages: {Object.values(country[0].languages || {}).join(", ")}
             </p>
+            <h1>Border Countries:</h1>
           </div>
         </div>
       </article>
