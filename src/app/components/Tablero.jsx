@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Tarjet from './tarjet';
 import useStore from '../store';
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 
 
 export default function Tablero() {
@@ -18,7 +19,7 @@ export default function Tablero() {
     const [results, setResults] = useState([]);
 
     useEffect(() => {
-        const fetchResults = async () => {
+        const fetchResults = debounce(async () => {
             let response;
 
             try {
@@ -44,9 +45,10 @@ export default function Tablero() {
             } catch (error) {
                 setResults([]);
             }
-        };
+        }, 300);
 
         fetchResults();
+        return () => fetchResults.cancel();
     }, [search.inputText, search.selectText]);
 
     return (
