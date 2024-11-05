@@ -1,38 +1,76 @@
-export default async function Country({ params }) {
+"use client";
 
-  const { id } = await params;
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
-  const response = await fetch(`https://restcountries.com/v3.1/alpha/${id}`);
-  const country = await response.json();
+export default function Country({ params }) {
+  const { id } = React.use(params);
+  const [country, setCountry] = useState(null); // Estado para almacenar los datos del país
+  const router = useRouter();
+
+  // Fetch de los datos del país
+  useEffect(() => {
+    const fetchCountry = async () => {
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${id}`);
+      const data = await response.json();
+      setCountry(data[0]); // Suponiendo que recibes un array
+    };
+
+    fetchCountry();
+  }, [id]);
+
+  // Manejo de retroceso
+  const handleGoBack = () => {
+    router.back();
+  };
+
+  // Verifica si country se ha cargado
+  if (!country) {
+    return <p>Cargando...</p>; // Mensaje de carga
+  }
 
   return (
-    <div>
-      <article className="flex flex-col p-10 gap-10">
-        <button className="w-1/5">Back</button>
-        <img src={country[0].flags.svg} alt="Bandera" className="w-full h-auto object-cover" />
-        <div>
-          <h1>{country[0].name.common}</h1>
+    <div className="flex flex-col p-10 gap-12">
+      <button onClick={handleGoBack} className="w-1/3 bg-darkBlue shadow-black shadow-sm md:w-1/6 lg:w-1/12">
+        Back
+      </button>
+      <article className="flex flex-col gap-10 lg:flex-row">
+        <img src={country.flags.svg} alt="Bandera" className="w-full h-auto object-cover md:w-6/12" />
+        <div className="flex flex-col gap-3">
+          <h1 className="font-bold text-xl">{country.name.common}</h1>
           <div className="flex flex-col gap-5">
-            <p>
-              Native Name: {Object.values(country[0].name.nativeName)[0].official}
+            <p className="leading-loose">
+              <span className="font-semibold">Native Name:</span> {Object.values(country.name.nativeName || {})[0]?.official || 'N/A'}
               <br />
-              Population: {country[0].population}
+              <span className="font-semibold">Population:</span> {country.population.toLocaleString() || 'N/A'}
               <br />
-              Region: {country[0].region}
+              <span className="font-semibold">Region:</span> {country.region || 'N/A'}
               <br />
-              Sub Region: {country[0].subregion}
+              <span className="font-semibold">Sub Region:</span> {country.subregion || 'N/A'}
               <br />
-              Capital: {country[0].capital}
+              <span className="font-semibold">Capital:</span> {country.capital ? country.capital.join(", ") : 'N/A'}
               <br />
             </p>
-            <p>
-              Top Level Domain: {country[0].population}
+            <p className="leading-loose">
+              <span className="font-semibold">Top Level Domain:</span> {country.tld?.join(", ") || 'N/A'}
               <br />
-              Currencies: {country[0].population}
+              <span className="font-semibold">Currencies:</span> {Object.values(country.currencies || {}).map(currency => currency.name).join(", ") || 'N/A'}
               <br />
-              Languages: {Object.values(country[0].languages || {}).join(", ")}
+              <span className="font-semibold">Languages:</span> {Object.values(country.languages || {}).join(", ") || 'N/A'}
             </p>
-            <h1>Border Countries:</h1>
+            {country.borders && country.borders.length > 0 ? (
+              <>
+                <h1 className="text-lg font-semibold">Border Countries:</h1>
+                <div className="flex flex-grow gap-2">
+                  {country.borders.map((border) => (
+                    <Link key={border} className="text-white text-center w-1/3 bg-darkBlue shadow-black shadow-sm md:w-1/6 lg:w-7/12" href={`/countries/${border}`}>
+                      {border}
+                    </Link>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </div>
         </div>
       </article>
