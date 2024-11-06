@@ -1,5 +1,5 @@
-import Tablero from "./components/tablero";
-import Search from "./components/search";
+import Tablero from "./components/Tablero";
+import Search from "./components/Search";
 
 export default function Home() {
 
