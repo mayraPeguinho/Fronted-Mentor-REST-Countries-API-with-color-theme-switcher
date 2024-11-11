@@ -1,16 +1,28 @@
-"use client"
-import { Suspense } from 'react';
-import useStore from '../store';
-import Loading from '../loading';
-import TableroServer from './TableroServer';
+import getPaises from '../services/getPaises';
+import Tarjet from './Tarjet';
 
 
-export default function Tablero() {
-    const search = useStore((state) => state.search);
+export default async function Tablero({ country, region }) {
+    const results = await getPaises(country, region);
 
     return (
-        <Suspense fallback={<Loading />}>
-            <TableroServer search={search} />
-        </Suspense>
+
+        <div className="flex flex-wrap h-full w-full gap-10 justify-center md:justify-center">
+            {results.length > 0 ? (
+                results.slice(0, 10).map((country, index) => (
+                    <Tarjet
+                        key={index}
+                        name={country.name.common}
+                        flag={country.flags.svg}
+                        population={country.population}
+                        region={country.region}
+                        capital={country.capital ? country.capital[0] : 'N/A'}
+                        ccn3={country.ccn3}
+                    />
+                ))
+            ) : (
+                <p>No se encontraron países.</p>
+            )}
+        </div>
     );
 }
